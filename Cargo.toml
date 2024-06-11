@@ -3,3 +3,6 @@ resolver = "2"
 members = [
     "app/rust",
 ]
+
+[workspace.dependencies]
+convnet-rust = { git = "https://github.com/HalidOdat/convnet-rust.git", features = ["uniffi"] }

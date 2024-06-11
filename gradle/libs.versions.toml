@@ -1,13 +1,20 @@
 [versions]
 agp = "8.3.2"
 kotlin = "1.9.0"
-coreKtx = "1.13.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
+kotlinxCoroutinesCore = "1.7.3"
+lifecycleRuntimeKtx = "2.8.1"
 activityCompose = "1.9.0"
-composeBom = "2023.08.00"
+composeBom = "2024.05.00"
+composeNavigation = "2.8.0-beta02"
+serialization = "1.6.3"
+koltin-realm = '1.11.0'
+hilt-navaigation-compose = "1.0.0"
+dagger-hilt = "2.47"
+runtimeLivedata = "1.6.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,8 +31,24 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+
+
+# realm
+realm-base = { group = "io.realm.kotlin", name = "library-base", version.ref = "koltin-realm" }
+realm-sync = { group = "io.realm.kotlin", name = "library-sync", version.ref = "koltin-realm" }
+
+# dagger hilt
+dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger-hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navaigation-compose" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+io-realm-kotlin = { id = "io.realm.kotlin", version.ref = "koltin-realm" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }

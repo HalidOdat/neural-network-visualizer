@@ -1,11 +1,15 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.kotlin.serialization)
+    id("kotlin-kapt")
+    id("io.realm.kotlin")
+    id("com.google.dagger.hilt.android")
 }
 
 val buildType = project.gradle.startParameter.taskNames.find { it.contains("assemble") }
     ?.removePrefix("assemble") // Extract the build type from the task name
-    ?.toLowerCase()
+    ?.lowercase()
     ?: "debug" // Default to debug if no assemble task is found
 
 println("Build type: $buildType")
@@ -66,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,10 +78,22 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    // dagger hilt
+    implementation(libs.dagger.hilt)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // realm db
+    implementation(libs.realm.base)
+    implementation(libs.realm.sync)
 
     // Uniffi
-    implementation("net.java.dev.jna:jna:5.7.0@aar")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    // NOTE: Having @aar is important or it wont be able to find the shared libs
+    implementation("net.java.dev.jna:jna:5.14.0@aar")
+    implementation(libs.kotlinx.coroutines.core)
 }
 
 tasks.register("SetupCargoNdk") {
@@ -102,7 +119,7 @@ tasks.register("SetupCargoNdk") {
 tasks.register("BuildRustLibrary") {
     dependsOn("SetupCargoNdk")
 
-    var buildCargoType = if (buildType == "debug")  { "--lib" } else { "--$buildType" }
+//    var buildCargoType = if (buildType == "debug")  { "--lib" } else { "--$buildType" }
 
     val projectDir = project.rootDir
     doLast {
@@ -118,7 +135,7 @@ tasks.register("BuildRustLibrary") {
                 "-t", "arm64-v8a",
                 "-t", "x86",
                 "-t", "x86_64",
-                "build", buildCargoType
+                "build", "--release"
             )
         }
         exec {
@@ -126,7 +143,7 @@ tasks.register("BuildRustLibrary") {
             commandLine("cargo", "run", "--bin", "uniffi-bindgen", "generate",
                 "--library", "./target/debug/libmobile.so",
                 "--language", "kotlin",
-                "--out-dir", "app/src/main/java/com/halidodat/neuralnetworkvisualizer/rust")
+                "--out-dir", "app/src/main/java/rust")
         }
     }
 }
