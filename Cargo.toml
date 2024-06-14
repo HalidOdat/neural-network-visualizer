@@ -5,4 +5,4 @@ members = [
 ]
 
 [workspace.dependencies]
-convnet-rust = { git = "https://github.com/HalidOdat/convnet-rust.git", features = ["uniffi"] }
+convnet-rust = { git = "https://github.com/HalidOdat/convnet-rust.git", rev="8ef20ef62c38754c058ccb36e3695ce06dcbea67", features = ["uniffi"] }

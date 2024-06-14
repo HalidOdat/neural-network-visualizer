@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.halidodat.neuralnetworkvisualizer.AddSample
 import com.halidodat.neuralnetworkvisualizer.ExpandableCard
 import com.halidodat.neuralnetworkvisualizer.Grid
+import com.halidodat.neuralnetworkvisualizer.MainViewModel
 import com.halidodat.neuralnetworkvisualizer.composables.CanvasGrid
 import com.halidodat.neuralnetworkvisualizer.models.Dim
 import com.halidodat.neuralnetworkvisualizer.models.NeuralNetworkRealm
@@ -40,11 +41,12 @@ import uniffi.mobile.OtherSample
 fun TrainingScreen(
     network: NeuralNetworkRealm,
     dim: Dim,
+    modelView: MainViewModel,
     navController: NavController,
 ) {
     var net by remember { mutableStateOf(NeuralNetwork.fromBytes(network.neuralNetworkBytes)) }
 
-    var stats by remember { mutableStateOf<List<TrainStats>>(listOf()) }
+    var stats by remember { mutableStateOf<MutableList<TrainStats>>(mutableListOf()) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -73,15 +75,38 @@ fun TrainingScreen(
                 )
             }
             net.setSamples(samples, 5U)
+            stats = mutableListOf()
 
             coroutineScope.launch {
-                while (!net.train().finished) {
-                    println("Training!!")
+                var stat = net.train()
+                while (!stat.finished) {
+//                    println("Training!!")
+                    stats.add(stat.stats)
+
+                    stat = net.train()
+                }
+
+                 modelView.realm.write {
+                    findLatest(network)?.let { network ->
+                        network.neuralNetworkBytes = net.toBytes()
+                    }
                 }
             }
 
         }) {
             Text(text = "Train")
+        }
+
+        key(stats) {
+            if (stats.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    for (stat in stats) {
+                        Text(text = "Loss: ${stat.costLoss}")
+                    }
+                }
+            }
         }
     }
 }

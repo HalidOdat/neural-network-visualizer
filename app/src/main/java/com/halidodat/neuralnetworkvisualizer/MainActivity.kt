@@ -180,7 +180,7 @@ class MainActivity : ComponentActivity() {
                                     val args = it.toRoute<Training>()
                                     var net by remember { mutableStateOf(viewModel.get(args.name)!!) };
                                     var dim = net.dim()
-                                    TrainingScreen(net, dim, navController)
+                                    TrainingScreen(net, dim, viewModel, navController)
                                 }
                                 composable<AddSample> {
                                     val args = it.toRoute<AddSample>()

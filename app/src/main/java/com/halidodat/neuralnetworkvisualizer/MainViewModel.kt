@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import org.mongodb.kbson.ObjectId
 
 class MainViewModel: ViewModel() {
-    private val realm: Realm = CoreApplication.realm
+    val realm: Realm = CoreApplication.realm
 
     fun insert(net: NeuralNetworkRealm) {
         viewModelScope.launch {
